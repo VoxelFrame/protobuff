@@ -155,12 +155,13 @@
 #error PROTOBUF_ATTRIBUTE_NO_DESTROY was previously defined
 #endif
 
-
 #define PROTOBUF_NAMESPACE "google::protobuf"
 #define PROTOBUF_NAMESPACE_ID google::protobuf
 #define PROTOBUF_NAMESPACE_OPEN \
-  namespace google {            \
-  namespace protobuf {
+  namespace google              \
+  {                             \
+    namespace protobuf          \
+    {
 #define PROTOBUF_NAMESPACE_CLOSE \
   } /* namespace protobuf */     \
   } /* namespace google */
@@ -305,16 +306,15 @@
 #ifdef _MSC_VER
 #define PROTOBUF_LONGLONG(x) x##I64
 #define PROTOBUF_ULONGLONG(x) x##UI64
-#define PROTOBUF_LL_FORMAT "I64"  // As in printf("%I64d", ...)
+#define PROTOBUF_LL_FORMAT "I64" // As in printf("%I64d", ...)
 #else
 // By long long, we actually mean int64.
 #define PROTOBUF_LONGLONG(x) x##LL
 #define PROTOBUF_ULONGLONG(x) x##ULL
 // Used to format real long long integers.
 #define PROTOBUF_LL_FORMAT \
-  "ll"  // As in "%lld". Note that "q" is poor form also.
+  "ll" // As in "%lld". Note that "q" is poor form also.
 #endif
-
 
 // Shared google3/opensource definitions. //////////////////////////////////////
 
@@ -336,7 +336,7 @@
 // https://en.cppreference.com/w/User:D41D8CD98F/feature_testing_macros#C.2B.2B98
 #define PROTOBUF_RTTI 0
 #elif defined(__GNUC__) && !defined(__GXX_RTTI)
-#https:  // gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
+#https: // gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
 #define PROTOBUF_RTTI 0
 #else
 #define PROTOBUF_RTTI 1
@@ -354,23 +354,22 @@
 // For Clang we use __builtin_offsetof() and suppress the warning,
 // to avoid Control Flow Integrity and UBSan vptr sanitizers from
 // crashing while trying to validate the invalid reinterpet_casts.
-#define PROTOBUF_FIELD_OFFSET(TYPE, FIELD)                   \
-  _Pragma("clang diagnostic push")                           \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(TYPE, FIELD)                            \
-  _Pragma("clang diagnostic pop")
+#define PROTOBUF_FIELD_OFFSET(TYPE, FIELD)                                                       \
+  _Pragma("clang diagnostic push")                                                               \
+      _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") __builtin_offsetof(TYPE, FIELD) \
+          _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__) && \
-          (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
+    (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
 #define PROTOBUF_FIELD_OFFSET(TYPE, FIELD) __builtin_offsetof(TYPE, FIELD)
-#else  // defined(__clang__)
+#else // defined(__clang__)
 // Note that we calculate relative to the pointer value 16 here since if we
 // just use zero, GCC complains about dereferencing a NULL pointer.  We
 // choose 16 rather than some other number just in case the compiler would
 // be confused by an unaligned pointer.
-#define PROTOBUF_FIELD_OFFSET(TYPE, FIELD)                                \
-  static_cast< ::google::protobuf::uint32>(reinterpret_cast<const char*>(                   \
-                             &reinterpret_cast<const TYPE*>(16)->FIELD) - \
-                         reinterpret_cast<const char*>(16))
+#define PROTOBUF_FIELD_OFFSET(TYPE, FIELD)                                                  \
+  static_cast<::google::protobuf::uint32>(reinterpret_cast<const char *>(                   \
+                                              &reinterpret_cast<const TYPE *>(16)->FIELD) - \
+                                          reinterpret_cast<const char *>(16))
 #endif
 
 #if defined(PROTOBUF_USE_DLLS)
@@ -389,7 +388,7 @@
 #else
 #define PROTOC_EXPORT __declspec(dllimport)
 #endif
-#else  // defined(_MSC_VER)
+#else // defined(_MSC_VER)
 #ifdef LIBPROTOBUF_EXPORTS
 #define PROTOBUF_EXPORT __attribute__((visibility("default")))
 #define PROTOBUF_EXPORT_TEMPLATE_DECLARE __attribute__((visibility("default")))
@@ -405,7 +404,7 @@
 #define PROTOC_EXPORT
 #endif
 #endif
-#else  // defined(PROTOBUF_USE_DLLS)
+#else // defined(PROTOBUF_USE_DLLS)
 #define PROTOBUF_EXPORT
 #define PROTOC_EXPORT
 #define PROTOBUF_EXPORT_TEMPLATE_DECLARE
@@ -457,10 +456,10 @@
 #undef STRICT
 #pragma push_macro("timezone")
 #undef timezone
-#endif  // _MSC_VER
+#endif // _MSC_VER
 
 #if defined(__clang__) || defined(__GNUC__) || defined(_MSC_VER)
-// Don't let Objective-C Macros interfere with proto identifiers with the same 
+// Don't let Objective-C Macros interfere with proto identifiers with the same
 // name.
 #pragma push_macro("DEBUG")
 #undef DEBUG
@@ -490,7 +489,7 @@
 #ifdef __has_builtin
 #if __has_builtin(__builtin_assume)
 #define PROTOBUF_ASSUME(pred) \
-  GOOGLE_DCHECK(pred);               \
+  GOOGLE_DCHECK(pred);        \
   __builtin_assume(pred)
 #else
 #define PROTOBUF_ASSUME(pred) GOOGLE_DCHECK(pred)
@@ -563,7 +562,7 @@
 // Some constructors can't be constexpr under MSVC, but given that MSVC will not
 // do constant initialization of globals anyway we can omit `constexpr` from
 // them. These constructors are marked with PROTOBUF_MAYBE_CONSTEXPR
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 #define PROTOBUF_MAYBE_CONSTEXPR
 #else
 #define PROTOBUF_MAYBE_CONSTEXPR constexpr
@@ -571,9 +570,9 @@
 
 #if _MSC_VER
 #define PROTOBUF_DISABLE_MSVC_UNION_WARNING \
-  __pragma(warning(push)) \
-  __pragma(warning(disable : 4582)) \
-  __pragma(warning(disable : 4583))
+  __pragma(warning(push))                   \
+      __pragma(warning(disable : 4582))     \
+          __pragma(warning(disable : 4583))
 
 #define PROTOBUF_ENABLE_MSVC_UNION_WARNING \
   __pragma(warning(pop))
